@@ -2,6 +2,30 @@
 
 A full-stack web application for browsing and searching 8,451+ recipes with advanced filtering, pagination, and detailed recipe information.
 
+## Screenshots
+
+### Default View
+The application displays recipes in a clean, organized table with search and filter options on the side.
+
+![Default View](screenshots/default_view.png)
+
+### Search Functionality
+Search for recipes by name - results update dynamically as you type.
+
+![Search Results](screenshots/search_used.png)
+
+### No Results State
+Helpful feedback when no recipes match your search criteria.
+
+![No Results](screenshots/no_results.png)
+
+### Pagination
+Navigate through thousands of recipes with intuitive pagination controls.
+
+![Pagination](screenshots/pagination.png)
+
+---
+
 ## Tech Stack
 
 ### Frontend
