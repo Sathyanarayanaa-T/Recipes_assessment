@@ -1,9 +1,28 @@
 import React, { useState } from 'react';
 
-const RecipeDetailDrawer = ({ recipe, isOpen, onClose }) => {
+const RecipeDetailDrawer = ({ recipe, isOpen, onClose, sidebarMode = false }) => {
     const [isTimeExpanded, setIsTimeExpanded] = useState(false);
 
-    if (!isOpen || !recipe) return null;
+    // In sidebar mode, show placeholder when no recipe is selected
+    if (sidebarMode && !isOpen) {
+        return (
+            <div className="h-full flex items-center justify-center p-6 text-center">
+                <div className="max-w-sm">
+                    <svg className="w-16 h-16 mx-auto mb-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <h3 className="text-lg font-semibold text-slate-700 mb-2">No Recipe Selected</h3>
+                    <p className="text-sm text-slate-500">Click on a recipe from the table to view its details here</p>
+                </div>
+            </div>
+        );
+    }
+
+    // In overlay mode, return null when not open
+    if (!sidebarMode && (!isOpen || !recipe)) return null;
+
+    // In sidebar mode, return null if no recipe even though drawer is "open"
+    if (sidebarMode && !recipe) return null;
 
     const nutrients = [
         { label: 'Calories', value: recipe.nutrients.calories },
@@ -17,6 +36,112 @@ const RecipeDetailDrawer = ({ recipe, isOpen, onClose }) => {
         { label: 'Sodium', value: recipe.nutrients.sodiumContent },
     ];
 
+    // Sidebar mode: embedded component without backdrop
+    if (sidebarMode) {
+        return (
+            <div className="h-full bg-white overflow-y-auto">
+                {/* Header */}
+                <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-start justify-between z-10">
+                    <div className="flex-1 pr-4">
+                        <h2 className="text-xl font-bold text-slate-900 mb-1">{recipe.title}</h2>
+                        <span className="inline-block px-3 py-1 bg-accent-100 text-accent-700 rounded-full text-sm font-medium">
+                            {recipe.cuisine}
+                        </span>
+                    </div>
+                    <button
+                        onClick={onClose}
+                        className="p-2 hover:bg-slate-100 rounded-lg transition-colors flex-shrink-0"
+                        title="Close details"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                {/* Content */}
+                <div className="p-6 space-y-6">
+                    {/* Description */}
+                    <div className="space-y-2">
+                        <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Description</h3>
+                        <p className="text-slate-700 leading-relaxed">{recipe.description}</p>
+                    </div>
+
+                    {/* Serves */}
+                    <div className="flex items-center gap-2 text-slate-700">
+                        <svg className="w-5 h-5 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <span className="font-medium">{recipe.serves}</span>
+                    </div>
+
+                    {/* Time Information */}
+                    <div className="space-y-2">
+                        <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Time</h3>
+                        <div className="bg-main-100 rounded-lg p-4">
+                            <button
+                                onClick={() => setIsTimeExpanded(!isTimeExpanded)}
+                                className="w-full flex items-center justify-between group"
+                            >
+                                <div className="flex items-center gap-2">
+                                    <svg className="w-5 h-5 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span className="font-medium text-slate-900">Total Time: {recipe.total_time} minutes</span>
+                                </div>
+                                <svg
+                                    className={`w-5 h-5 text-slate-400 transition-transform ${isTimeExpanded ? 'rotate-180' : ''}`}
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            {isTimeExpanded && (
+                                <div className="mt-4 ml-7 space-y-2 border-l-2 border-accent-300 pl-4">
+                                    <div className="flex items-center gap-2 text-slate-700">
+                                        <span className="text-sm">Prep Time:</span>
+                                        <span className="font-medium">{recipe.prep_time} minutes</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-slate-700">
+                                        <span className="text-sm">Cook Time:</span>
+                                        <span className="font-medium">{recipe.cook_time} minutes</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Nutritional Information */}
+                    <div className="space-y-3">
+                        <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Nutritional Information</h3>
+                        <div className="bg-main-100 rounded-lg overflow-hidden">
+                            <table className="w-full">
+                                <thead className="bg-main-200">
+                                    <tr>
+                                        <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase">Nutrient</th>
+                                        <th className="px-4 py-3 text-right text-xs font-semibold text-slate-700 uppercase">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-200">
+                                    {nutrients.map((nutrient, index) => (
+                                        <tr key={index} className="hover:bg-white transition-colors">
+                                            <td className="px-4 py-3 text-sm text-slate-700">{nutrient.label}</td>
+                                            <td className="px-4 py-3 text-sm font-medium text-slate-900 text-right">{nutrient.value}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Overlay mode: original behavior with backdrop
     return (
         <>
             {/* Backdrop */}
@@ -31,7 +156,7 @@ const RecipeDetailDrawer = ({ recipe, isOpen, onClose }) => {
                 <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-start justify-between">
                     <div className="flex-1 pr-4">
                         <h2 className="text-2xl font-bold text-slate-900 mb-1">{recipe.title}</h2>
-                        <span className="inline-block px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm font-medium">
+                        <span className="inline-block px-3 py-1 bg-accent-100 text-accent-700 rounded-full text-sm font-medium">
                             {recipe.cuisine}
                         </span>
                     </div>
@@ -55,7 +180,7 @@ const RecipeDetailDrawer = ({ recipe, isOpen, onClose }) => {
 
                     {/* Serves */}
                     <div className="flex items-center gap-2 text-slate-700">
-                        <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
                         <span className="font-medium">{recipe.serves}</span>
@@ -64,13 +189,13 @@ const RecipeDetailDrawer = ({ recipe, isOpen, onClose }) => {
                     {/* Time Information */}
                     <div className="space-y-2">
                         <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Time</h3>
-                        <div className="bg-slate-50 rounded-lg p-4">
+                        <div className="bg-main-100 rounded-lg p-4">
                             <button
                                 onClick={() => setIsTimeExpanded(!isTimeExpanded)}
                                 className="w-full flex items-center justify-between group"
                             >
                                 <div className="flex items-center gap-2">
-                                    <svg className="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className="w-5 h-5 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                     <span className="font-medium text-slate-900">Total Time: {recipe.total_time} minutes</span>
@@ -86,7 +211,7 @@ const RecipeDetailDrawer = ({ recipe, isOpen, onClose }) => {
                             </button>
 
                             {isTimeExpanded && (
-                                <div className="mt-4 ml-7 space-y-2 border-l-2 border-primary-300 pl-4">
+                                <div className="mt-4 ml-7 space-y-2 border-l-2 border-accent-300 pl-4">
                                     <div className="flex items-center gap-2 text-slate-700">
                                         <span className="text-sm">Prep Time:</span>
                                         <span className="font-medium">{recipe.prep_time} minutes</span>
@@ -103,9 +228,9 @@ const RecipeDetailDrawer = ({ recipe, isOpen, onClose }) => {
                     {/* Nutritional Information */}
                     <div className="space-y-3">
                         <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Nutritional Information</h3>
-                        <div className="bg-slate-50 rounded-lg overflow-hidden">
+                        <div className="bg-main-100 rounded-lg overflow-hidden">
                             <table className="w-full">
-                                <thead className="bg-slate-100">
+                                <thead className="bg-main-200">
                                     <tr>
                                         <th className="px-4 py-3 text-left text-xs font-semibold text-slate-700 uppercase">Nutrient</th>
                                         <th className="px-4 py-3 text-right text-xs font-semibold text-slate-700 uppercase">Amount</th>

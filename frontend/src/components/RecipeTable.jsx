@@ -4,7 +4,7 @@ import RecipeRow from './RecipeRow';
 const RecipeTable = ({ recipes, onRecipeClick, isLoading, limit = 15 }) => {
     if (isLoading) {
         return (
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="bg-white rounded-xl shadow-sm border border-main-400 overflow-hidden">
                 <div className="animate-pulse">
                     {[...Array(limit)].map((_, i) => (
                         <div key={i} className="border-b border-slate-200 px-6 py-4">
@@ -24,7 +24,7 @@ const RecipeTable = ({ recipes, onRecipeClick, isLoading, limit = 15 }) => {
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden animate-fadeIn">
             <div className="overflow-x-auto">
                 <table className="w-full">
-                    <thead className="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200">
+                    <thead className="bg-gradient-to-r from-accent-50 to-accent-100 border-b border-main-400">
                         <tr>
                             <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
                                 Recipe Title
