@@ -88,21 +88,22 @@ const RecipesPage = () => {
                     </div>
                 )}
 
-                {/* Recipe Table or No Results */}
-                {!isLoading && !hasRecipes && hasFilters && (
-                    <NoResults type="search" />
+                {/* Loading State */}
+                {isLoading && (
+                    <RecipeTable
+                        recipes={[]}
+                        onRecipeClick={() => { }}
+                        isLoading={true}
+                    />
                 )}
 
-                {!isLoading && !hasRecipes && !hasFilters && !error && (
-                    <NoResults type="noData" />
-                )}
-
-                {hasRecipes && (
+                {/* Recipe Table with Results */}
+                {!isLoading && hasRecipes && (
                     <>
                         <RecipeTable
                             recipes={recipeData.recipes}
                             onRecipeClick={handleRecipeClick}
-                            isLoading={isLoading}
+                            isLoading={false}
                         />
 
                         <PaginationControls
@@ -116,12 +117,14 @@ const RecipesPage = () => {
                     </>
                 )}
 
-                {isLoading && (
-                    <RecipeTable
-                        recipes={[]}
-                        onRecipeClick={() => { }}
-                        isLoading={true}
-                    />
+                {/* No Results - With Filters */}
+                {!isLoading && !hasRecipes && hasFilters && !error && (
+                    <NoResults type="search" />
+                )}
+
+                {/* No Results - Without Filters */}
+                {!isLoading && !hasRecipes && !hasFilters && !error && (
+                    <NoResults type="noData" />
                 )}
             </div>
 
