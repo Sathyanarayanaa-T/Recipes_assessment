@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const PaginationControls = ({
     currentPage,
@@ -8,6 +8,25 @@ const PaginationControls = ({
     onPageChange,
     onLimitChange
 }) => {
+    const [inputValue, setInputValue] = useState(limit);
+
+    // Update local state when prop changes
+    useEffect(() => {
+        setInputValue(limit);
+    }, [limit]);
+
+    // Debounce the limit change
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            const value = Number(inputValue);
+            if (value >= 15 && value !== limit) {
+                onLimitChange(value);
+            }
+        }, 500); // Wait 500ms after user stops typing
+
+        return () => clearTimeout(timer);
+    }, [inputValue, limit, onLimitChange]);
+
     const startIndex = (currentPage - 1) * limit + 1;
     const endIndex = Math.min(currentPage * limit, totalRecipes);
 
@@ -74,8 +93,8 @@ const PaginationControls = ({
                                 key={page}
                                 onClick={() => onPageChange(page)}
                                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${currentPage === page
-                                        ? 'bg-primary-600 text-white'
-                                        : 'text-slate-700 hover:bg-slate-100'
+                                    ? 'bg-primary-600 text-white'
+                                    : 'text-slate-700 hover:bg-slate-100'
                                     }`}
                             >
                                 {page}
@@ -99,16 +118,24 @@ const PaginationControls = ({
             {/* Results Per Page */}
             <div className="flex items-center gap-2">
                 <label htmlFor="limit" className="text-sm text-slate-600">Per page:</label>
-                <select
+                <input
                     id="limit"
-                    value={limit}
-                    onChange={(e) => onLimitChange(Number(e.target.value))}
-                    className="px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all"
-                >
-                    <option value={15}>15</option>
-                    <option value={25}>25</option>
-                    <option value={50}>50</option>
-                </select>
+                    type="number"
+                    min="15"
+                    value={inputValue}
+                    onChange={(e) => {
+                        setInputValue(e.target.value);
+                    }}
+                    onBlur={(e) => {
+                        const value = Number(e.target.value);
+                        if (value < 15 || isNaN(value) || e.target.value === '') {
+                            setInputValue(15);
+                            onLimitChange(15);
+                        }
+                    }}
+                    className="w-20 px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all"
+                />
+                <span className="text-xs text-slate-500">(min: 15)</span>
             </div>
         </div>
     );
