@@ -28,7 +28,7 @@
   }
 }
 
-/* Smooth loading animations */
+/* Smooth loading animations with natural motion */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -52,10 +52,10 @@
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.4s ease-out;
+  animation: fadeIn 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .animate-slideIn {
-  animation: slideIn 0.4s ease-out;
+  animation: slideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   animation-fill-mode: backwards;
 }

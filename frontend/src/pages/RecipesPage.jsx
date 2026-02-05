@@ -111,42 +111,44 @@ const RecipesPage = () => {
 
                 {/* Recipe Table with Results */}
                 {!isLoading && hasRecipes && (
-                    <>
-                        <RecipeTable
-                            recipes={recipeData.recipes}
-                            onRecipeClick={handleRecipeClick}
-                            isLoading={false}
-                        />
+                    {!error && (
+                <RecipeTable
+                    recipes={recipeData.recipes}
+                    onRecipeClick={handleRecipeClick}
+                    isLoading={isLoading}
+                    limit={limit}
+                />
+            )}
 
-                        <PaginationControls
-                            currentPage={currentPage}
-                            totalPages={recipeData.total_pages}
-                            totalRecipes={recipeData.total_recipes}
-                            limit={limit}
-                            onPageChange={handlePageChange}
-                            onLimitChange={handleLimitChange}
-                        />
-                    </>
+                <PaginationControls
+                    currentPage={currentPage}
+                    totalPages={recipeData.total_pages}
+                    totalRecipes={recipeData.total_recipes}
+                    limit={limit}
+                    onPageChange={handlePageChange}
+                    onLimitChange={handleLimitChange}
+                />
+            </>
                 )}
 
-                {/* No Results - With Filters */}
-                {!isLoading && !hasRecipes && hasFilters && !error && (
-                    <NoResults type="search" />
-                )}
+            {/* No Results - With Filters */}
+            {!isLoading && !hasRecipes && hasFilters && !error && (
+                <NoResults type="search" />
+            )}
 
-                {/* No Results - Without Filters */}
-                {!isLoading && !hasRecipes && !hasFilters && !error && (
-                    <NoResults type="noData" />
-                )}
-            </div>
-
-            {/* Recipe Detail Drawer */}
-            <RecipeDetailDrawer
-                recipe={selectedRecipe}
-                isOpen={isDrawerOpen}
-                onClose={() => setIsDrawerOpen(false)}
-            />
+            {/* No Results - Without Filters */}
+            {!isLoading && !hasRecipes && !hasFilters && !error && (
+                <NoResults type="noData" />
+            )}
         </div>
+
+            {/* Recipe Detail Drawer */ }
+    <RecipeDetailDrawer
+        recipe={selectedRecipe}
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+    />
+        </div >
     );
 };
 

@@ -1,12 +1,12 @@
 import React from 'react';
 import RecipeRow from './RecipeRow';
 
-const RecipeTable = ({ recipes, onRecipeClick, isLoading }) => {
+const RecipeTable = ({ recipes, onRecipeClick, isLoading, limit = 15 }) => {
     if (isLoading) {
         return (
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                 <div className="animate-pulse">
-                    {[...Array(5)].map((_, i) => (
+                    {[...Array(limit)].map((_, i) => (
                         <div key={i} className="border-b border-slate-200 px-6 py-4">
                             <div className="flex items-center gap-4">
                                 <div className="h-6 bg-slate-200 rounded w-1/3"></div>
