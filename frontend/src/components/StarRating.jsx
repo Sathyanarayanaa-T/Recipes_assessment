@@ -1,6 +1,25 @@
 import React from 'react';
 
 const StarRating = ({ rating }) => {
+    // Handle null, undefined, or invalid ratings
+    if (rating == null || isNaN(rating)) {
+        return (
+            <div className="flex items-center gap-1">
+                {/* Empty Stars for no rating */}
+                {[...Array(5)].map((_, i) => (
+                    <svg
+                        key={`empty-${i}`}
+                        className="w-5 h-5 text-gray-300 fill-current"
+                        viewBox="0 0 20 20"
+                    >
+                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                    </svg>
+                ))}
+                <span className="ml-2 text-sm text-slate-500 italic">No rating</span>
+            </div>
+        );
+    }
+
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 >= 0.5;
     const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
